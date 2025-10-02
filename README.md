@@ -16,7 +16,7 @@ Small, scalable REST API for a Todo-style tasks app with authentication, RBAC, v
 * Redis caching for GET endpoints (Upstash-ready)
 * Postman collection included for API testing
 * Swagger UI available at `/api-docs` for interactive API documentation
-
+* Dockerfile included for backend 
 ---
 
 ## Quickstart (local)
