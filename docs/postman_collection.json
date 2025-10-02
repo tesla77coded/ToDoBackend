@@ -1,0 +1,197 @@
+{
+  "info": {
+    "name": "Todo Backend - API Collection",
+    "_postman_id": "todo-backend-collection",
+    "description": "Postman collection for the internship assignment: users + tasks endpoints (auth, RBAC, CRUD). Set environment variable base_url (e.g. http://localhost:5000/api/v1).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth / Users",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/register",
+              "host": ["{{base_url}}"],
+              "path": ["users","register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/users/login", "host": ["{{base_url}}"], "path": ["users","login"] }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Save JWT to environment for other requests",
+                  "if (responseCode.code === 200) {",
+                  "  var json = pm.response.json();",
+                  "  if (json.token) {",
+                  "    pm.environment.set(\"jwt_token\", json.token);",
+                  "  } else if (json.accessToken) {",
+                  "    pm.environment.set(\"jwt_token\", json.accessToken);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": { "raw": "{{base_url}}/users/me", "host": ["{{base_url}}"], "path": ["users","me"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User (self)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/users/{{userId}}", "host": ["{{base_url}}"], "path": ["users","{{userId}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": { "raw": "{{base_url}}/users/all", "host": ["{{base_url}}"], "path": ["users","all"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": { "raw": "{{base_url}}/users/{{userId}}", "host": ["{{base_url}}"], "path": ["users","{{userId}}"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Finish internship task\",\n  \"description\": \"Implement backend and frontend\",\n  \"dueDate\": \"2025-10-10\",\n  \"subtasks\": [\n    { \"title\": \"Backend testing\", \"done\": true },\n    { \"title\": \"Frontend UI\", \"done\": false }\n  ]\n}"
+            },
+            "url": { "raw": "{{base_url}}/tasks", "host": ["{{base_url}}"], "path": ["tasks"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/tasks?status=in-progress&q=intern&sort=createdAt:desc",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"],
+              "query": [
+                { "key": "status", "value": "in-progress" },
+                { "key": "q", "value": "intern" },
+                { "key": "sort", "value": "createdAt:desc" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Task",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": { "raw": "{{base_url}}/tasks/{{taskId}}", "host": ["{{base_url}}"], "path": ["tasks","{{taskId}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Finish internship project ASAP\",\n  \"status\": \"in-progress\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/tasks/{{taskId}}", "host": ["{{base_url}}"], "path": ["tasks","{{taskId}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Archive Task",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": { "raw": "{{base_url}}/tasks/{{taskId}}/archive", "host": ["{{base_url}}"], "path": ["tasks","{{taskId}}","archive"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": { "raw": "{{base_url}}/tasks/{{taskId}}", "host": ["{{base_url}}"], "path": ["tasks","{{taskId}}"] }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": { "exec": [], "type": "text/javascript" }
+    }
+  ]
+}
