@@ -14,12 +14,21 @@ app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 
-//conrs config
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-  credentials: true,
-}));
-
+//cors 
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("CORS not allowed for this origin"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 // morgan -> winston
 app.use(morgan('combined', {
