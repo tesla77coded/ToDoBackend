@@ -41,7 +41,7 @@ export const login = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        isAdmin: user.role,
+        isAdmin,
         token: generateToken(user._id)
       });
       console.log(`${user.name} logged in successfully.`);
