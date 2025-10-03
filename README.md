@@ -6,6 +6,8 @@ Small, scalable REST API for a Todo-style tasks app with authentication, RBAC, v
 admin@123
 
 email and password respectively.
+
+
 ---
 
 ## Features implemented
