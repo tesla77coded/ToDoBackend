@@ -2,6 +2,10 @@
 
 Small, scalable REST API for a Todo-style tasks app with authentication, RBAC, validation, caching, and a minimal frontend demo (separate). Built with Node.js, Express, MongoDB (Atlas), and Redis (Upstash).
 
+*Note: Access admin account by using admin@gmail.com
+admin@123
+
+email and password respectively.
 ---
 
 ## Features implemented
